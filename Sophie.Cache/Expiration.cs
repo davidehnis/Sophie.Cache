@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sophie.Cache
+﻿namespace Sophie.Cache
 {
     // Summary: Defines the supported expiration modes for cache items. Value None will indicate that
     // no expiration should be set.

@@ -18,45 +18,45 @@ namespace Sophie.Cache
         private readonly Revisions<T> _revisions = new Revisions<T>();
 
         /// <summary>Retruns cached instance of type T, based on key value</summary>
-        /// <param name="key">instance id to fetch</param>
+        /// <param name="instanceId">instance id to fetch</param>
         /// <returns>Returns the instance</returns>
-        public T Fetch(Guid key)
+        public T Fetch(Guid instanceId)
         {
-            return _cache.Fetch(key);
+            return _cache.Fetch(instanceId);
         }
 
         /// <summary>Retruns cached instance of type T, based on key value</summary>
-        /// <param name="key">string key of index of instance</param>
-        /// <returns>instance of type T</returns>
-        public T Fetch(string key)
+        /// <param name="instance">fetch the most recent copy of T</param>
+        /// <returns>Returns the instance</returns>
+        public T Fetch(T instance)
         {
-            return _cache.Fetch(key);
+            return _cache.Fetch(instance.Instance);
+        }
+
+        /// <summary>Retruns cached instance of type T, based on key value</summary>
+        /// <param name="instanceId">string key of index of instance</param>
+        /// <returns>instance of type T</returns>
+        public T Fetch(string instanceId)
+        {
+            return _cache.Fetch(instanceId);
         }
 
         /// <summary>Inserts a new instance of type T, indexes it based on key value</summary>
         /// <param name="key">  Guid type key</param>
         /// <param name="value">The instance to insert</param>
-        public void Insert(Guid key, T value)
+        public void Insert(T value)
         {
-            _cache.Insert(key, value);
-            _revisions.Insert(value);
-        }
+            _cache.Insert(value.Instance, value);
 
-        /// <summary>Inserts a new instance of type T, indexes it based on key value</summary>
-        /// <param name="key">  string type key</param>
-        /// <param name="value">The instance to insert</param>
-        public void Insert(string key, T value)
-        {
-            _cache.Insert(key, value);
-            _revisions.Insert(value);
+            var copyof = value.Copy(value);
+            _revisions.Insert(copyof);
         }
 
         /// <summary>Returns all copies/revisions of a single instance</summary>
-        /// <param name="instanceId">The instance id</param>
         /// <returns>A list of revisions of an instance</returns>
-        public IEnumerable<T> Revisions(Guid instanceId)
+        public IEnumerable<T> Revisions(T value)
         {
-            return _revisions.FetchAll(instanceId);
+            return _revisions.FetchAll(value.Instance);
         }
     }
 }

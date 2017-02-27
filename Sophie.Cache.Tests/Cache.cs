@@ -1,9 +1,7 @@
-﻿using System;
+﻿using CacheManager.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Baxter.Domain;
-using Sophie.Domain.Applied;
 using System.Linq;
-using CacheManager.Core;
+using System;
 
 namespace Sophie.Cache.Tests
 {
@@ -39,43 +37,87 @@ namespace Sophie.Cache.Tests
         }
 
         [TestMethod]
+        public void DoseReserveProperlyCountStoreRevisedItems()
+        {
+            // Arrange
+            var cache = new Reserve<Toy>();
+            var a = new Toy(Guid.NewGuid()) { Name = "Bob" };
+            cache.Insert(a);
+
+            // Act
+            a.Name = "Phil";
+            cache.Insert(a);
+            var revisions = cache.Revisions(a);
+
+            // Assert
+            Assert.IsNotNull(revisions);
+            Assert.IsTrue(revisions.Any());
+        }
+
+        [TestMethod]
         public void DoseReserveProperlyStoreChangedItems()
         {
             // Arrange
             var cache = new Reserve<Toy>();
-            var a = new Toy();
-            var b = new Toy();
-
-            a.Id = Guid.NewGuid();
-            a.Name = "Bob";
-            b.Id = Guid.NewGuid();
-            b.Name = "George";
+            var a = new Toy(Guid.NewGuid())
+            {
+                Id = Guid.NewGuid(),
+                Name = "Bob"
+            };
+            cache.Insert(a);
 
             // Act
-            cache.Insert(a.Id, a);
-            cache.Insert(b.Id, b);
             a.Name = "Phil";
-            cache.Insert(a.Id, a);
-            var result = cache.Fetch(a.Id);
+            cache.Insert(a);
+            var result = cache.Fetch(a.Instance);
 
             // Assert
             Assert.IsTrue(result.Name == "Phil");
         }
 
         [TestMethod]
-        [Ignore]
-        public void ErrorsOccurredInTheExpectedAmount()
+        public void DoseReserveProperlyStoreRevisedItems()
         {
             // Arrange
-            //var cache = Cache.Instance;
-            //var node = new Node("Bob");
+            var cache = new Reserve<Toy>();
+            var a = new Toy(Guid.NewGuid());
+            var b = new Toy(Guid.NewGuid());
 
-            //// Act
-            //cache.Insert(node);
-            //var retrieved = cache.Retrieve(node.Key);
+            a.Name = "Bob";
+            b.Name = "George";
 
-            //// Assert
-            //Assert.IsTrue(retrieved.Errors.Occurrences("method was invalid") == 4);
+            // Act
+            cache.Insert(a);
+            cache.Insert(b);
+            a.Name = "Phil";
+            cache.Insert(a);
+            var elementZero = cache.Revisions(a).ElementAt(0);
+            var elementOne = cache.Revisions(a).ElementAt(1);
+
+            // Assert
+            Assert.IsTrue(elementZero.Name != elementOne.Name);
+        }
+
+        [TestMethod]
+        public void DoseReserveRetrievedCorrectCountOfRevisedItems()
+        {
+            // Arrange
+            var cache = new Reserve<Toy>();
+            var a = new Toy(Guid.NewGuid());
+            var b = new Toy(Guid.NewGuid());
+
+            a.Name = "Bob";
+            b.Name = "George";
+
+            // Act
+            cache.Insert(a);
+            cache.Insert(b);
+            a.Name = "Phil";
+            cache.Insert(a);
+            var result = cache.Revisions(a);
+
+            // Assert
+            Assert.IsTrue(result.Count() == 2);
         }
 
         [TestMethod]
@@ -124,39 +166,6 @@ namespace Sophie.Cache.Tests
         }
 
         [TestMethod]
-        [Ignore]
-        public void InsertANodeWithoutException()
-        {
-            // Arrange
-            //var cache = Cache.Instance;
-            //var node = new Node("Bob");
-
-            //// Act
-            //var response = cache.Insert(node);
-
-            //// Assert
-            //Assert.IsNotNull(response);
-        }
-
-        [TestMethod]
-        [Ignore]
-        public void ProperErrorsWereRegisteredAndReturned()
-        {
-            // Arrange
-            //var cache = Cache.Instance;
-            //var node = new Node("Bob");
-
-            //// Act
-            //cache.Insert(node);
-            //var retrieved = cache.Retrieve(node.Key);
-
-            //// Assert
-            //Assert.IsNotNull(retrieved.Errors);
-            //Assert.IsTrue(retrieved.Errors.Any());
-            //Assert.IsTrue(retrieved.Errors.Contains("method was invalid"));
-        }
-
-        [TestMethod]
         public void RemoveNodeWithoutException()
         {
             // Arrange
@@ -178,12 +187,29 @@ namespace Sophie.Cache.Tests
 
     internal class Toy : IItem<Toy>
     {
+        public Toy(Guid instance)
+        {
+            Instance = instance;
+        }
+
         public Guid Id { get; set; }
+
+        public Guid Instance { get; protected set; }
 
         public string Name { get; set; }
 
         public DateTime Stamp { get; set; }
 
-        public Toy Value { get; set; }
+        public Toy Copy(Toy instance)
+        {
+            var result = new Toy(instance.Instance)
+            {
+                Id = Guid.NewGuid(),
+                Name = string.Copy(instance.Name),
+                Stamp = DateTime.UtcNow
+            };
+
+            return result;
+        }
     }
 }

@@ -1,19 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sophie.Cache
 {
-    public interface IItem<out T>
+    /// <summary>Represents an interface to an item that can be used by and contained in Cacher</summary>
+    /// <typeparam name="T">The class that is being cached</typeparam>
+    public interface IItem<T>
     {
+        /// <summary>The unique copy id</summary>
         Guid Id { get; }
 
-        String Name { get; }
+        /// <summary>
+        /// The unique Instance id. A revisions list can have multiple copies of the instance
+        /// </summary>
+        Guid Instance { get; }
 
+        /// <summary>The name for this copy</summary>
+        string Name { get; }
+
+        /// <summary>Creation date time stamp</summary>
         DateTime Stamp { get; }
 
-        T Value { get; }
+        /// <summary>Create a value copy of the instance</summary>
+        /// <param name="instance">The template</param>
+        /// <returns>A new instance, copy, of instance</returns>
+        T Copy(T instance);
     }
 }

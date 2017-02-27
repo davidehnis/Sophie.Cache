@@ -1,10 +1,8 @@
 C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\bin\Debug\Sophie.Cache.Tests.dll
 C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\bin\Debug\Sophie.Cache.Tests.pdb
-C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
 C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\bin\Debug\Sophie.Domain.dll
 C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\bin\Debug\Newtonsoft.Json.dll
 C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\bin\Debug\Sophie.Domain.pdb
-C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
 C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\bin\Debug\Newtonsoft.Json.xml
 C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\obj\Debug\Sophie.Cache.Tests.csprojResolveAssemblyReference.cache
 C:\Users\david\Dropbox\VSGIT\Sophie\Sophie.Cache.Tests\obj\Debug\Sophie.Cache.Tests.dll

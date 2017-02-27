@@ -26,16 +26,16 @@ namespace Sophie.Cache
         /// <param name="value">The value [copy] to insert</param>
         public virtual void Insert(T value)
         {
-            var revisions = _revisions.Fetch(value.Id);
+            var revisions = _revisions.Fetch(value.Instance);
 
             if (revisions == null)
             {
                 revisions = new List<T>();
-                _revisions.Insert(value.Id, revisions);
+                _revisions.Insert(value.Instance, revisions);
             }
 
             revisions.Add(value);
-            _revisions.Insert(value.Id, revisions);
+            _revisions.Insert(value.Instance, revisions);
         }
     }
 }

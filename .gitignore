@@ -45,3 +45,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+Sophie.Cache.Tests/obj/Debug/Sophie.Cache.Tests.csprojResolveAssemblyReference.cache
+*.pdb
+*.dll
+*.pdb
+Sophie.Cache/obj/Debug/Sophie.Cache.dll
