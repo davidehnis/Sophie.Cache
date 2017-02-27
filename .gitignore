@@ -50,3 +50,7 @@ Sophie.Cache.Tests/obj/Debug/Sophie.Cache.Tests.csprojResolveAssemblyReference.c
 *.dll
 *.pdb
 Sophie.Cache/obj/Debug/Sophie.Cache.dll
+Sophie.Cache/obj
+Sophie.Cache/bin
+Sophie.Cache.Tests/obj
+Sophie.Cache.Tests/bin
