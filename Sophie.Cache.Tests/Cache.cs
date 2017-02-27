@@ -37,6 +37,27 @@ namespace Sophie.Cache.Tests
         }
 
         [TestMethod]
+        public void DoseCacheProperlyStoreRevisionsOfTwoDistinctInstances()
+        {
+            // Arrange
+            var cache = new Reserve<Toy>();
+            var firstInstance = new Toy(Guid.NewGuid()) { Name = "Bob" };
+            var secondInstance = new Toy(Guid.NewGuid()) { Name = "George" };
+            cache.Insert(firstInstance);
+            cache.Insert(secondInstance);
+
+            // Act
+            firstInstance.Name = "Robert";
+            secondInstance.Name = "G";
+            cache.Insert(firstInstance);
+            cache.Insert(secondInstance);
+
+            // Assert
+            Assert.IsTrue(cache.Fetch(firstInstance).Name == "Robert");
+            Assert.IsTrue(cache.Fetch(secondInstance).Name == "G");
+        }
+
+        [TestMethod]
         public void DoseReserveProperlyCountStoreRevisedItems()
         {
             // Arrange
@@ -80,22 +101,36 @@ namespace Sophie.Cache.Tests
         {
             // Arrange
             var cache = new Reserve<Toy>();
-            var a = new Toy(Guid.NewGuid());
-            var b = new Toy(Guid.NewGuid());
-
-            a.Name = "Bob";
-            b.Name = "George";
+            var a = new Toy(Guid.NewGuid()) { Name = "Bob" };
+            cache.Insert(a);
 
             // Act
-            cache.Insert(a);
-            cache.Insert(b);
             a.Name = "Phil";
             cache.Insert(a);
-            var elementZero = cache.Revisions(a).ElementAt(0);
-            var elementOne = cache.Revisions(a).ElementAt(1);
 
             // Assert
-            Assert.IsTrue(elementZero.Name != elementOne.Name);
+            Assert.IsTrue(cache.Revisions(a).ElementAt(0).Name != cache.Revisions(a).ElementAt(1).Name);
+        }
+
+        [TestMethod]
+        public void DoseReserveProperlyStoreRevisionsOfTwoDistinctInstances()
+        {
+            // Arrange
+            var cache = new Reserve<Toy>();
+            var firstInstance = new Toy(Guid.NewGuid()) { Name = "Bob" };
+            var secondInstance = new Toy(Guid.NewGuid()) { Name = "George" };
+            cache.Insert(firstInstance);
+            cache.Insert(secondInstance);
+
+            // Act
+            firstInstance.Name = "Robert";
+            secondInstance.Name = "G";
+            cache.Insert(firstInstance);
+            cache.Insert(secondInstance);
+
+            // Assert
+            Assert.IsTrue(cache.Revisions(firstInstance).ElementAt(0).Name == "Robert");
+            Assert.IsTrue(cache.Revisions(secondInstance).ElementAt(0).Name == "G");
         }
 
         [TestMethod]
@@ -103,21 +138,33 @@ namespace Sophie.Cache.Tests
         {
             // Arrange
             var cache = new Reserve<Toy>();
-            var a = new Toy(Guid.NewGuid());
-            var b = new Toy(Guid.NewGuid());
-
-            a.Name = "Bob";
-            b.Name = "George";
+            var a = new Toy(Guid.NewGuid()) { Name = "Bob" };
+            cache.Insert(a);
 
             // Act
-            cache.Insert(a);
-            cache.Insert(b);
             a.Name = "Phil";
             cache.Insert(a);
-            var result = cache.Revisions(a);
 
             // Assert
-            Assert.IsTrue(result.Count() == 2);
+            Assert.IsTrue(cache.Revisions(a).Any());
+            Assert.IsTrue(cache.Revisions(a).Count() == 2);
+        }
+
+        [TestMethod]
+        public void DoseReserveReturnRevisionsSortedFromMostRecentToLeastRecent()
+        {
+            // Arrange
+            var cache = new Reserve<Toy>();
+            var a = new Toy(Guid.NewGuid()) { Name = "Bob" };
+            cache.Insert(a);
+
+            // Act
+            a.Name = "Phil";
+            cache.Insert(a);
+
+            // Assert
+            Assert.IsTrue(cache.Revisions(a).ElementAt(0).Name == "Phil");
+            Assert.IsFalse(cache.Revisions(a).ElementAt(1).Name == "Phil");
         }
 
         [TestMethod]
